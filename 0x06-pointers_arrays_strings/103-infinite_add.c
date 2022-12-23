@@ -1,60 +1,51 @@
 #include "main.h"
 
 /**
-* infinite_add - C function that adds two numbers stored
-*in strings to a buffer.
-*Assumes that strings are never empty and
-*that numbers will always be positive, or 0.
-*Assumes there are only digits stored in the number strings.
-*If result can be stored in the buffer,
-*returns a pointer to the result.
-*If result cannot be stored in the buffer, returns `0`.
-*@n1:first number to be added
-*@n2:second number to be added
-*@r: store result
-*@size_r: size of buffer
-*Return:returns pointer to result
-*/
-
+ * infinite_add - Adds two numbers
+ * @n1: The first number
+ * @n2: The second number
+ * @r: The buffer for storing the result
+ * @size_r: The size of the buffer
+ *
+ * Return: If result can be stored in r, then r, otherwise 0
+ */
 char *infinite_add(char *n1, char *n2, char *r, int size_r)
 {
-}
+	int n1_len, n2_len, max_len, i;
+	char n1_dig, n2_dig, carry, rem, tmp;
 
-/**
-* add_strings - Adds the numbers stored in two strings.
-* @n1: The string containing the first number to be added.
-* @n2: The string containing the second number to be added.
-* @r: The buffer to store the result.
-* @r_index: The current index of the buffer.
-*
-* Return: If r can store the sum - a pointer to the result.
-*         If r cannot store the sum - 0.
-*/
-
-char *add_strings(char *n1, char *n2, char *r, int r_index)
-{
-	int num, tens = 0;
-
-	for (; *n1 && *n2; n1--, n2--, r_index--)
+	for (n1_len = 0; *(n1 + n1_len) != '\0'; n1_len++)
+		carry = 0;
+	for (n2_len = 0; *(n2 + n2_len) != '\0'; n2_len++)
+		rem = 0;
+	max_len = n1_len > n2_len ? n1_len : n2_len;
+	i = max_len;
+	if (size_r < max_len + 1)
+		return (0);
+	*(r + max_len) = '\0';
+	i--;
+	n1_len--;
+	n2_len--;
+	for (; i >= 0; i--)
 	{
-		num = (*n1 - '0') + (*n2 - '0');
-		num += tens;
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
+		n1_dig = n1_len >= 0 ? *(n1 + n1_len) - '0' : 0;
+		n2_dig = n2_len >= 0 ? *(n2 + n2_len) - '0' : 0;
+		rem = (n1_dig + n2_dig + carry) % 10;
+		carry = (n1_dig + n2_dig + carry) / 10;
+		*(r + i) = (rem + '0');
+		n1_len--;
+		n2_len--;
 	}
-
-	for (; *n1; n1--; r_index++)
+	if (carry > 0 && size_r >= max_len + 2)
 	{
-		num = *(n1 - '0') + tens; 
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
+		for (i = max_len + 1; i > 0; i--)
+		{
+			tmp = *(r + i);
+			*(r + i) = *(r + i - 1);
+			*(r + i - 1) = tmp;
+		}
+		*(r + i) = carry + '0';
+		return (r);
 	}
-
-	for (; *n2; n2--;  r_index--)
-	{
-		num = (*n2 - '0') + tens; 
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10; 
-	}
-	
+	return ((carry > 0 && size_r < max_len + 2) ? 0 : r);
 }
