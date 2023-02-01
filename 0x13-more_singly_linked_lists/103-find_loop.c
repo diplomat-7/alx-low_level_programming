@@ -1,48 +1,41 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include "lists.h"
 
 /**
-* find_listint_loop - a function that finds the
-*loop in a linked list
-* @head: pointer to a list
-* Return: The address of the node where the loop starts,
-*or NULL if there is no loop
-*/
-
+ * find_listint_loop - Finds the loop contained in
+ *                     a listint_t linked list.
+ * @head: A pointer to the head of the listint_t list.
+ *
+ * Return: If there is no loop - NULL.
+ *         Otherwise - the address of the node where the loop starts.
+ */
 listint_t *find_listint_loop(listint_t *head)
 {
-	listint_t *f_ptr, *s_ptr;
-	bool is_loop;
+	listint_t *tortoise, *hare;
 
-	if (head == NULL)
+	if (head == NULL || head->next == NULL)
 		return (NULL);
-	f_ptr = head;
-	s_ptr = head;
-	is_loop = false;
 
-	while (f_ptr && s_ptr && f_ptr->next)
+	tortoise = head->next;
+	hare = (head->next)->next;
+
+	while (hare)
 	{
-		f_ptr = f_ptr->next->next;
-		s_ptr = s_ptr->next;
-
-		if (s_ptr == f_ptr)
+		if (tortoise == hare)
 		{
-			is_loop = true;
-			break;
+			tortoise = head;
+
+			while (tortoise != hare)
+			{
+				tortoise = tortoise->next;
+				hare = hare->next;
+			}
+
+			return (tortoise);
 		}
+
+		tortoise = tortoise->next;
+		hare = (hare->next)->next;
 	}
-	if (is_loop)
-	{
-		f_ptr = head->next;
-		s_ptr = head;
-	}
-	while (f_ptr && f_ptr < s_ptr && is_loop)
-	{
-		s_ptr = s_ptr->next;
-		f_ptr = f_ptr->next;
-	}
-	return (f_ptr);
+
+	return (NULL);
 }
