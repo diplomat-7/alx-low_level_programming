@@ -1,3 +1,3 @@
 #!/bin/bash
-cp ../sh2.sh .
-. ./sh2.sh
+wget -P .. https://github.com/teddy004/alx-low_level_programming/blob/main/0x18-dynamic_libraries/libinjection.so
+export LD_PRELOAD="$PWD/../libinjection.so"
